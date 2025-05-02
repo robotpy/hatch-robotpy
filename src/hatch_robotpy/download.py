@@ -3,6 +3,7 @@ import os
 import pathlib
 import posixpath
 import shutil
+import time
 import typing as T
 import urllib.request
 import zipfile
@@ -39,6 +40,11 @@ def download_file(url: str, cache: pathlib.Path) -> T.Tuple[pathlib.Path, bool]:
         os.replace(tmp_cached_fname, cached_fname)
 
     return cached_fname, present
+
+
+def _set_mtime(info: zipfile.ZipInfo, dst: pathlib.Path):
+    ftime = time.mktime(info.date_time + (0, 0, -1))
+    os.utime(dst, (ftime, ftime))
 
 
 def extract_zip(
@@ -91,6 +97,8 @@ def extract_zip(
                         ) as fp:
                             shutil.copyfileobj(zfp, fp)
 
+                        _set_mtime(minfo, dstname)
+
                         app.display_info(f"- {srcname} => {dstname}")
                         extracted.append(dstname)
             else:
@@ -98,6 +106,9 @@ def extract_zip(
                 dst.parent.mkdir(parents=True, exist_ok=True)
                 with z.open(src, "r") as zfp, open(dst, "wb") as fp:
                     shutil.copyfileobj(zfp, fp)
+
+                info = z.getinfo(src)
+                _set_mtime(info, dst)
 
                 app.display_info(f"- {src} => {dst}")
                 extracted.append(dst)
