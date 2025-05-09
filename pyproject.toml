@@ -37,3 +37,19 @@ source = "vcs"
 
 [tool.hatch.build.hooks.vcs]
 version-file = "src/hatch_robotpy/_version.py"
+
+
+[tool.mypy]
+allow_redefinition = true
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "elftools.*",
+    "delocate.*",
+    "pefile.*",
+    "pkgconf.*",
+    "tomli_w.*",
+]
+ignore_missing_imports = true
+follow_untyped_imports = true
