@@ -31,6 +31,9 @@ class DownloadHook(BuildHookInterface):
         if self.target_name != "wheel":
             return
 
+        if not self.downloads:
+            return
+
         build_data["pure_python"] = False
 
         root = pathlib.Path(self.root)
