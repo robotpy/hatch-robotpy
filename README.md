@@ -6,6 +6,8 @@ the following functionality:
 
 * Download a zip file from a specified URL
 * Download a zip file from a maven repository using maven coordinates
+* Write project version information to a file (primarily useful when not
+  already using a dynamic version source that provides this)
 
 See [config](src/hatch_robotpy/config.py) for `pyproject.toml` configuration.
 

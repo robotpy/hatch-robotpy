@@ -156,6 +156,17 @@ class Download:
 
 @dataclasses.dataclass
 class HookConfig:
+    """
+    .. code-block:: toml
+
+        [tool.hatch.build.hooks.robotpy]
+
+    """
+
+    #: When set, writes a simple python file with the project version to the
+    #: specified file (relative to the root of the project).
+    version_file: T.Optional[str] = None
+
     maven_lib_download: T.List[MavenLibDownload] = dataclasses.field(
         default_factory=list
     )
