@@ -84,9 +84,10 @@ class DownloadHook(BuildHookInterface):
                         for lib in lib_map.values():
                             self.strip(lib)
 
-                build_data["artifacts"] += [
-                    p.relative_to(root).as_posix() for p in downloaded
-                ]
+                if download.add_to_wheel:
+                    build_data["artifacts"] += [
+                        p.relative_to(root).as_posix() for p in downloaded
+                    ]
 
         finally:
             self.cleanup_cache()

@@ -29,6 +29,7 @@ def convert_maven_to_downloads(mcfg: MavenLibDownload) -> T.List[Download]:
         dl_sources["extract_to"] = mcfg.extract_to
         dl_sources["files"] = mcfg.sources
         # dl_sources["patches"] = mcfg.patches
+        dl_sources["add_to_wheel"] = mcfg.add_to_wheel
     elif mcfg.sources is not None:
         raise ValueError("sources must be None if use_sources is False!")
     # elif mcfg.patches is not None:
@@ -46,6 +47,7 @@ def convert_maven_to_downloads(mcfg: MavenLibDownload) -> T.List[Download]:
             dl_lib["libdir"] = "${OS}/${ARCH}/shared"
             dl_lib["url"] = _get_artifact_url(mcfg, "${OS}${ARCH}")
             dl_lib["strip"] = mcfg.strip
+            dl_lib["add_to_wheel"] = mcfg.add_to_wheel
 
         if mcfg.staticlibs is not None:
             dl_static["extract_to"] = mcfg.extract_to
@@ -53,6 +55,7 @@ def convert_maven_to_downloads(mcfg: MavenLibDownload) -> T.List[Download]:
             dl_static["libdir"] = "${OS}/${ARCH}/static"
             dl_static["url"] = _get_artifact_url(mcfg, "${OS}${ARCH}static")
             dl_static["strip"] = mcfg.strip
+            dl_static["add_to_wheel"] = mcfg.add_to_wheel
 
     # headers
     if mcfg.use_headers:
@@ -60,6 +63,7 @@ def convert_maven_to_downloads(mcfg: MavenLibDownload) -> T.List[Download]:
         dl_header["incdir"] = ""
         dl_header["url"] = _get_artifact_url(mcfg, "headers")
         # dl_header["header_patches"] = mcfg.header_patches
+        dl_header["add_to_wheel"] = mcfg.add_to_wheel
 
     # Construct downloads and return it
     downloads = []

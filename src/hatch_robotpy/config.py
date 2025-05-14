@@ -80,6 +80,9 @@ class MavenLibDownload:
     #: current build environment.
     enable_if: T.Optional[str] = None
 
+    #: If false, don't include downloaded contents in wheel
+    add_to_wheel: bool = True
+
 
 @dataclasses.dataclass
 class Download:
@@ -145,6 +148,9 @@ class Download:
     #: This download will be only enabled if the environment marker matches the
     #: current build environment.
     enable_if: T.Optional[str] = None
+
+    #: If false, don't include downloaded contents in wheel
+    add_to_wheel: bool = True
 
     def _update_with_platform(self, platform):
         for n in ("url", "incdir", "libdir"):
