@@ -68,8 +68,8 @@ class DownloadHook(BuildHookInterface):
         try:
 
             for download in self.downloads:
-                lib_map = self.make_lib_map(download)
-                downloaded = self.download(download, lib_map.copy())
+                lib_map, to_strip = self.make_lib_map(download)
+                downloaded = self.download(download, lib_map)
 
                 # strip bin
                 strip = download.strip
@@ -81,7 +81,7 @@ class DownloadHook(BuildHookInterface):
 
                 if strip and self.target_name == "wheel":
                     if self.platform.os == "linux":
-                        for lib in lib_map.values():
+                        for lib in to_strip:
                             self.strip(lib)
 
                 build_data["artifacts"] += [
@@ -167,9 +167,12 @@ class DownloadHook(BuildHookInterface):
             return self.get_dl_extract_root(download) / "lib"
         return None
 
-    def make_lib_map(self, download: Download) -> T.Dict[str, pathlib.Path]:
+    def make_lib_map(
+        self, download: Download
+    ) -> T.Tuple[T.Dict[str, pathlib.Path], T.List[pathlib.Path]]:
 
         to: T.Dict[str, pathlib.Path] = {}
+        to_strip: T.List[pathlib.Path] = []
 
         libdir = self.get_dl_lib_dir(download)
         if libdir is not None:
@@ -184,6 +187,7 @@ class DownloadHook(BuildHookInterface):
                 for lib in download.libs:
                     name = f"{self.platform.libprefix}{lib}{self.platform.libext}"
                     to[posixpath.join(download.libdir, name)] = libdir / name
+                    to_strip.append(libdir / name)
 
                     if self.platform.linkext:
                         name = f"{self.platform.libprefix}{lib}{self.platform.linkext}"
@@ -194,7 +198,7 @@ class DownloadHook(BuildHookInterface):
                     name = f"{self.platform.libprefix}{lib}{self.platform.staticext}"
                     to[posixpath.join(download.libdir, name)] = libdir / name
 
-        return to
+        return to, to_strip
 
     def download(
         self, download: Download, to: T.Dict[str, pathlib.Path]
