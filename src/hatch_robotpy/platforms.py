@@ -62,6 +62,11 @@ _platforms = {
         os="linux",
         tag="linux_aarch64",
     ),
+    "linux-systemcore": WPILibMavenPlatform(
+        arch="systemcore",
+        os="linux",
+        tag="linux_systemcore",
+    ),
     "win32": WPILibMavenPlatform(
         arch="x86",
         os="windows",
